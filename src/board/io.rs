@@ -182,10 +182,12 @@ impl std::str::FromStr for Board {
 				if let Some(&b' ') = s.as_bytes().get(0) {
 					let s = s.trim_ascii_start();
 					let mut num = 1;
+					let mut numming = false;
 					for c in s.as_bytes() {
 						match c {
-							b'2' ..= b'9' => {
-								num = c - b'0';
+							b'0' ..= b'9' => {
+								num = c - b'0' + if numming {num * 10} else {0};
+								numming = true;
 								continue;
 							}
 							b'G' => b.rsv[player::BLACK as usize][pid::GUARD] += num,
@@ -205,6 +207,7 @@ impl std::str::FromStr for Board {
 							_ => break,
 						}
 						num = 1;
+						numming = false;
 					}
 				}
 				
@@ -392,7 +395,7 @@ impl std::fmt::Display for H<'_> {
 pub struct SVG<'a>(pub &'a Board);
 impl std::fmt::Display for SVG<'_> {
 	fn fmt(&self, f:&mut std::fmt::Formatter<'_>)->std::fmt::Result {
-		write!(f, "{}", r#"<svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg"><style>path{stroke:var(--color,black);fill:none}text{stroke:none;fill:var(--color,black);font-size:6px}</style><path d="M5 15h90v10h-90v10h90v10h-90v10h90v10h-90v10h90v10h-90v10h90v10h-90v-90h10v90h10v-90h10v90h10v-90h10v90h10v-90h10v90h10v-90h10v90"/>"#)?;
+		write!(f, "{}", r#"<svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg"><style>path{stroke:black;fill:none}text{stroke:none;fill:black;font-size:6px}</style><rect width="100%" height="100%" fill="white"/><path d="M5 15h90v10h-90v10h90v10h-90v10h90v10h-90v10h90v10h-90v10h90v10h-90v-90h10v90h10v-90h10v90h10v-90h10v90h10v-90h10v90h10v-90h10v90"/>"#)?;
 
 		let &Self(b) = self;
 

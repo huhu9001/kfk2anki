@@ -227,7 +227,7 @@ fn main() {
                     pv = pv_new;
                 }
 
-                writeln!(deck, "{}{}\t{pv}", "<style>.nightMode svg{--color:white}</style>", shogi::board::io::SVG(b)).unwrap();
+                writeln!(deck, "{}{}\t{pv}", "<style>.nightMode svg{filter:invert(1)}</style>", shogi::board::io::SVG(b)).unwrap();
             }
 
             b.do_move(mv);
