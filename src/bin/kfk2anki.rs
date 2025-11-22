@@ -40,6 +40,7 @@ fn main() {
         println!("input file:");
         let mut s = String::new();
         std::io::stdin().read_line(&mut s).unwrap();
+        s.truncate(s.trim_ascii_end().len());
         inputs.push(s);
     }
 
@@ -126,22 +127,22 @@ fn main() {
         
         let player = match (we.contains(name_black), we.contains(name_white)) {
             (true, false) => false,
-            (false, true) => false,
+            (false, true) => true,
             _ => {
                 println!("Who am I?");
-                println!("  1. Black ${name_black}");
-                println!("  2. White ${name_white}");
+                println!("  1. Black {name_black}");
+                println!("  2. White {name_white}");
                 let mut s = String::new();
                 std::io::stdin().read_line(&mut s).unwrap();
                 match s.trim().parse::<i32>() {
                     Ok(1) => {
                         we.remove(name_white);
-                        we.insert(String::from(name_black));
+                        we.insert(name_black.into());
                         false
                     }
                     Ok(2) => {
                         we.remove(name_black);
-                        we.insert(String::from(name_white));
+                        we.insert(name_white.into());
                         true
                     }
                     _ => continue,
@@ -186,7 +187,7 @@ fn main() {
         
         b = Board::from(Board::NEW_STANDARD);
         for (n, &mv) in mvs.iter().enumerate() {
-            if scores[n + 2] - scores[n + 1] < -delta {
+            if b.turn == player && scores[n + 2] - scores[n + 1] < -delta {
                 let mut b_invert = std::mem::MaybeUninit::<Board>::uninit();
                 let b = if b.turn {
                     let b = b_invert.write(b.clone());
@@ -229,7 +230,6 @@ fn main() {
 
                 writeln!(deck, "{}{}\t{pv}", "<style>.nightMode svg{filter:invert(1)}</style>", shogi::board::io::SVG(b)).unwrap();
             }
-
             b.do_move(mv);
         }
     }
