@@ -35,8 +35,6 @@ fn main() {
     }
 
     if inputs.is_empty() {
-        //inputs.push(String::from("C:/Users/admin/Documents/Kifu/piyo_20251115_194055.kfk"));
-        //output = String::from("E:/Print/draft/shogi");
         println!("input file:");
         let mut s = String::new();
         std::io::stdin().read_line(&mut s).unwrap();
@@ -44,7 +42,7 @@ fn main() {
         inputs.push(s);
     }
 
-    let mut deck = std::fs::File::create(format!("{output}/deck.csv")).unwrap();
+    let mut deck = std::fs::File::create(format!("{output}/deck.tsv")).unwrap();
     'next_file:for finput in inputs {
         println!(r#"Working on file "{finput}"..."#);
         macro_rules! invalid_file {
